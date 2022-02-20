@@ -14,6 +14,7 @@ namespace TicTacToe
         {
             _gameStatus = 0;
             _gameState = new int[] {0,0,0,0,0,0,0,0,0};
+            Display.update(_gameState, false);
             if (startTurnSet && playerFirstTrun != null)
             {
                 _turn = playerFirstTrun.Value;
@@ -43,12 +44,15 @@ namespace TicTacToe
                 legality = checkLegality();
                 if (!legality) // resets the turn 
                 {
+                    //Console.WriteLine("not legal");
                     _turn = !_turn;
                     continue;
                 }
+                setMove();
                 checkWin();
                 Display.update(_gameState, _turn);
-            }       
+            }
+            endOfMatch();
         }
         private void getInput()
         {
@@ -62,13 +66,22 @@ namespace TicTacToe
                     temp += key.KeyChar;
                     if (int.TryParse(temp, out action))
                     {
-                        validKeyState = true;
+                        action--;
+                        if (action >= 0 && action < 9)
+                        {
+                            validKeyState = true;
+                        }
                     }
                 }
                 else if (_singelPlayer && !_turn)
                 {
                     bot.setState(_gameState);
                     action = bot.getTurn();
+                    action--;
+                    if (action >= 0 && action < 9)
+                    {
+                        validKeyState = true;
+                    }
                 }
                 else
                 {
@@ -136,6 +149,38 @@ namespace TicTacToe
             {
                 return false;
             }
+        }
+        private void setMove()
+        {
+            if (_turn)
+            {
+                _gameState[action] = 1;
+            }
+            else
+            {
+                _gameState[action] = 2;
+            }
+        }
+        private void endOfMatch()
+        {
+            //Console.Clear();
+            if (_gameStatus < 3)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Console.WriteLine($"player {_gameStatus} has won");
+                    Thread.Sleep(300);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Console.WriteLine("it's a draw");
+                    Thread.Sleep(300);
+                }
+            }
+            Console.ReadLine();
         }
     }
 

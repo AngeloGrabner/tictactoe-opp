@@ -56,7 +56,7 @@ using System.Runtime.InteropServices;
      */
 internal static class Display
 {
-    private static char[] f; //fild
+    private static char[] f; //field
     private static int[] _gameState = new int[0];
     private const int _width = 59, _height = 29;
     
@@ -85,19 +85,9 @@ internal static class Display
         Console.OutputEncoding = System.Text.Encoding.Unicode;
         f = new char[_width * _height];
     }
-    public static void update(int[] gameState, bool playerTurn)
+    public static void update(int[] gameState, bool playerTurn) // colering is coming soon
     {
         _gameState = gameState;
-        ConsoleColor c;
-        if (playerTurn)
-        {
-
-        }
-        else
-        {
-
-        }
-
         Console.Clear();
         draw();
         Console.Write(f);
@@ -138,9 +128,7 @@ internal static class Display
                 draw_O(i%3,i/3);
             }
         }
-
     }
-
     private static void verticalLine(int x)
     {
         for (int i = x; i < f.Length;i+=_width)
@@ -155,7 +143,7 @@ internal static class Display
             f[i] = '\u2588';
         }
     }
-    private static void draw_X(int x, int y) // yes it is hard coded and hopfully works
+    private static void draw_O(int x, int y) // yes it is hard coded and hopfully works
     {
         char c = '\u2588';
         for (int i = 6; i < 12; i++)
@@ -183,9 +171,20 @@ internal static class Display
         f[convert(x * 20 + 12, y * 10 + 6)] = c; // lower right 
         f[convert(x * 20 + 13, y * 10 + 6)] = c;
     }
-    private static void draw_O(int x, int y) // this one as well
+    private static void draw_X(int x, int y) // this one as well
     {
+        char c = '\u2588';
+        for (int i = 1, j = 2; i < 8; i++, j+=2) // left top to right bottom 
+        {
+            f[convert(x * 20 + j, y * 10 + i)] = c;
+            f[convert(x * 20 + j+1, y * 10 + i)] = c;
+        }
 
+        for (int i = 7, j = 2; i >= 1; i--, j+=2) // left bottom to right top
+        {
+            f[convert(x * 20 + j, y * 10 + i)] = c;
+            f[convert(x * 20 + j+1, y * 10 + i)] = c;
+        }
     }
 
 }
