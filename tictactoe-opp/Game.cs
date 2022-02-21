@@ -70,6 +70,7 @@ namespace TicTacToe
                         if (action >= 0 && action < 9)
                         {
                             validKeyState = true;
+                            Thread.Sleep(300);
                         }
                     }
                 }
@@ -165,20 +166,23 @@ namespace TicTacToe
             //Console.Clear();
             if (_gameStatus < 3)
             {
-                for (int i = 0; i < 10; i++)
+                Console.WriteLine($"player {_gameStatus} has won");
+                for (int i = 0; i < 60; i++)
                 {
-                    Console.WriteLine($"player {_gameStatus} has won");
-                    Thread.Sleep(300);
+                    Console.WriteLine();
+                    Thread.Sleep(200);
                 }
             }
             else
             {
-                for (int i = 0; i < 10; i++)
+                Console.WriteLine("it's a draw");
+                for (int i = 0; i < 60; i++)
                 {
-                    Console.WriteLine("it's a draw");
-                    Thread.Sleep(300);
+                    Console.WriteLine();
+                    Thread.Sleep(200);
                 }
             }
+            
             Console.ReadLine();
         }
     }

@@ -13,14 +13,23 @@ internal class Bot
     private int[] input = new int[9]; // is the tic tac toe field and ist start at index 0 and ends at index 8 
     private prioraty[] enemy = new prioraty[9];
     private prioraty[] self = new prioraty[9];
-    private float _errorRate;
+    private int _errorRate;
     private int _enemy;
     private int _self;
     private int _empty;
     private int finalMove;
     public Bot(int difficulty = 1, int ownPlayerNumber = 2, int enemyPlayerNumber = 1, int emptyFieldNumber = 0) // difficulty 1 to 5 (easy to hard) 
     {
-        _errorRate = (5 - difficulty) / 5;
+        if (difficulty < 0 || difficulty > 5)
+        {
+            throw new ArgumentException($"difficulty must be betwen 1 and 5, but is {difficulty}");
+        }
+        else if (!(ownPlayerNumber != enemyPlayerNumber && enemyPlayerNumber != emptyFieldNumber && ownPlayerNumber != emptyFieldNumber))
+        {
+            throw new ArgumentException("ownPlayernumber, enemyPlayerNumber and emptyFieldNumber must differ");
+        }
+        _errorRate = 100 - (difficulty * 10);
+
         _self = ownPlayerNumber;
         _enemy = enemyPlayerNumber;
         _empty = emptyFieldNumber;
@@ -273,7 +282,20 @@ internal class Bot
                 possibleMoves[i] = (float)prioraty.NaN;
             }
         }
-        finalMove = indexOfHighst(possibleMoves);
+
+        int bestMove = indexOfHighst(possibleMoves);
+        possibleMoves[bestMove] = -1;
+        int secondBestMove = indexOfHighst(possibleMoves);
+
+        Random rand = new();
+        if (rand.Next(100) <= _errorRate)
+        {
+            finalMove = bestMove;
+        }
+        else
+        {
+            finalMove = secondBestMove;
+        }
     }
     private int indexOfHighst(float[] array)
     {
