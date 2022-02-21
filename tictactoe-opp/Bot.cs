@@ -1,52 +1,170 @@
 ﻿using System;
+
+internal enum prioraty
+{
+    NaN = -1,
+    unImportant = 0,
+    important = 1,
+    veryImportant = 2,
+    mostImportant = 3
+}
 internal class Bot
 {
-    private int[] f = new int[0]; // is the tic tac toe field 
+    private int[] input = new int[9]; // is the tic tac toe field and ist start at index 0 and ends at index 8 
+    private prioraty[] enemy = new prioraty[9]; 
+    private prioraty[] self = new prioraty[9];
     private float _errorRate;
-    private int counterMovePosition; // -1 = no counter move 
-
-    public Bot(int difficulty = 1) // difficulty 1 to 5 (easy to hard) 
+    private int _enemy;
+    private int _self;
+    private int _empty;
+    public Bot(int difficulty = 1, int ownPlayerNumber = 2, int enemyPlayerNumber = 1, int emptyFieldNumber = 0) // difficulty 1 to 5 (easy to hard) 
     {
-        _errorRate = (5 - difficulty)/5;
-        counterMovePosition = -1;
+        _errorRate = (5 - difficulty) / 5;
+        _self = ownPlayerNumber;
+        _enemy = enemyPlayerNumber;
+        _empty = emptyFieldNumber;
     }
     public void setState(int[] state)
     {
-        f = state;
+        input = state;
     }
     public int getTurn()
     {
+        Tuple<bool,int> isLastMove = preAnalyse();
+        if (isLastMove.Item1)
+        {
+            return isLastMove.Item2;
+        }
         analyseEnemy();
         analyseSelf();
+        evaluate();
         return 0;
+    }
+    private Tuple<bool, int> preAnalyse() // in case only one field is left 
+    {
+        int totalTurnCounter = 0;
+        int lastPossibleMove = 0;
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (input[i] != _empty)
+            {
+                totalTurnCounter++;
+            }
+            if (input[i] == _empty)
+            {
+                lastPossibleMove = i;
+            }
+
+        }
+        if (totalTurnCounter == 8)
+        {
+            return new(true, lastPossibleMove);
+        }
+        else
+        {
+            return new(false, -1);
+        }
     }
     private void analyseEnemy() // trys to stop the oponent form winning 
     {
-        int enemyTurns = 0;
-        for (int i = 0; i < f.Length; i++)
+        int enemyTurnCount = 0;
+        for (int i = 0; i < input.Length; i++)
         {
-            if (f[i] == 2)
+            enemy[i] = (int)prioraty.unImportant; // clearing old data
+            if (input[i] == _enemy)
             {
-                enemyTurns++;
+                enemyTurnCount++;
             }
         }
-        if (enemyTurns == 0)
+        if (enemyTurnCount == 0) //all moves have equal value from the perspective of countering the enemy 
         {
-            counterMovePosition = -1;
             return;
         }
-        else if (enemyTurns == 1) // look for most valueable move 
+        else if (enemyTurnCount == 1)
         {
-            if (f[4] == 0) // take mide if it is not taken
+            int pos = Array.IndexOf(input, _enemy);
+            if (pos == 4) // in the middle 
             {
-                counterMovePosition = 4;
+                enemy[0] = prioraty.important;
+                enemy[2] = prioraty.important;
+                enemy[6] = prioraty.important;
+                enemy[8] = prioraty.important;
+            }
+            else
+            {
+                enemy[4] = prioraty.important;
             }
         }
-        
-
-
+        else
+        {
+            //trying to find 2  in a row
+            for (int i = 0; i < 3; i++) // vertiacl lines
+            {
+                if (input[i] == _enemy && input[i+3] == _enemy && input[i+6] == _empty) // bottom field empty 
+                {
+                    enemy[i + 6] = prioraty.veryImportant;
+                    return; // if there is a situation with 2 diffent 2 in a rows it is a lose anyways
+                }
+                else if (input[i] == _enemy && input[i + 3] == _empty && input[i + 6] == _enemy) //mid
+                {
+                    enemy[i + 3] = prioraty.veryImportant;
+                    return;
+                }
+                else if(input[i] == _empty && input[i + 3] == _enemy && input[i + 6] == _enemy) // top
+                {
+                    enemy[i] = prioraty.veryImportant;
+                    return;
+                }
+            }
+            for (int i = 0;i < 9;i+=3) // horizontal lines 
+            {
+                if (input[i] == _enemy && input[i+1] == _enemy && input[i+2] == _empty) // right side 
+                {
+                    enemy[i + 2] = prioraty.veryImportant;
+                    return;
+                }
+                else if (input[i] == _enemy && input[i + 1] == _empty && input[i + 2] == _enemy) // mid
+                {
+                    enemy[i + 1] = prioraty.veryImportant;
+                    return;
+                }
+                else if (input[i] == _empty && input[i + 1] == _enemy && input[i + 2] == _enemy) // left side 
+                {
+                    enemy[i] = prioraty.veryImportant;
+                    return;
+                }
+            }
+            if (input[0] == _enemy && input[4] == _enemy && input[8] == _empty) // left top to right bottom 
+            {
+                enemy[8] = prioraty.veryImportant;
+            }
+            else if (input[0] == _enemy && input[4] == _empty && input[8] == _enemy)
+            {
+                enemy[4] = prioraty.veryImportant;
+            }
+            else if (input[0] == _empty && input[4] == _enemy && input[8] == _enemy)
+            {
+                enemy[0] = prioraty.veryImportant;
+            }
+            else if (input[6] == _enemy && input[4] == _enemy && input[2] == _empty) // left bottom to right top
+            {
+                enemy[2] = prioraty.veryImportant;
+            }
+            else if (input[6] == _enemy && input[4] == _empty && input[2] == _enemy)
+            {
+                enemy[4] = prioraty.veryImportant;
+            }
+            else if (input[6] == _empty && input[4] == _enemy && input[2] == _enemy)
+            {
+                enemy[6] = prioraty.veryImportant;
+            }
+        }
     }
     private void analyseSelf() // trys to find a way to win 
+    {
+
+    }
+    private void evaluate() // evaluates the final move 
     {
 
     }
