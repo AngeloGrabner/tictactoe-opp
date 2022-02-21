@@ -77,7 +77,6 @@ namespace TicTacToe
                 {
                     bot.setState(_gameState);
                     action = bot.getTurn();
-                    action--;
                     if (action >= 0 && action < 9)
                     {
                         validKeyState = true;

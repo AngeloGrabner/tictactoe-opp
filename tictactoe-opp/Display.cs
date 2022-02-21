@@ -62,7 +62,7 @@ internal static class Display
     
     static Display()
     {
-        if (Console.LargestWindowHeight < _height+1)
+        if (Console.LargestWindowHeight < _height)
         {
             #pragma warning disable CA1416 // only works on windows
             Console.WindowHeight = Console.LargestWindowHeight;
@@ -70,7 +70,7 @@ internal static class Display
         }
         else
         {
-            Console.WindowHeight = _height+2;
+            Console.WindowHeight = _height;
         }
         if (Console.LargestWindowWidth < _width)
         {

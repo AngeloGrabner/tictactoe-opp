@@ -6,7 +6,7 @@ namespace TicTacToe
     {
         static void Main()
         {
-            Game game = new Game(false);
+            Game game = new Game();
             game.run();
         }
     }
