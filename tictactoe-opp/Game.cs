@@ -4,58 +4,109 @@ namespace TicTacToe
 {
     internal class Game
     {
-        private static readonly string info;
-        private readonly bool _singelPlayer;
-        private Bot bot;
-        private int action = -1;
-        private bool _turn; // true = player1 false = player2
-        private int[] _gameState; // 0 = empty, 1 = player1, 2 = player2
-        private int _gameStatus; // 0 = no winner, 1 = player1 wins, 2 = player2 wins, 3 = draw
-        public Game(bool singelPlayer = true, bool startTurnSet = false, bool? playerFirstTrun = null)
+
+        #region Konstruktoren
+        internal Game() : this(true, false, null) { }
+        internal Game(bool playMod) : this(playMod, false, null) { }
+        internal Game(bool playMod, bool startTurnSet) : this(playMod, startTurnSet, null) { }
+        internal Game(bool playMod, bool startTurnSet, bool? playerFirstTurn)
         {
-            _gameStatus = 0;
-            _gameState = new int[] {0,0,0,0,0,0,0,0,0};
-            Display.update(_gameState, false);
-            if (startTurnSet && playerFirstTrun != null)
+            sTS = startTurnSet;
+            pFT = playerFirstTurn;
+
+            singlePlayer = playMod;
+            gameStatus = 0;
+            gameState = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+
+
+            if (sTS && pFT != null)
             {
-                _turn = playerFirstTrun.Value;
+                turn = pFT.Value;
             }
             else
             {
                 Random rand = new Random();
+
                 if (rand.Next(2) == 0)
                 {
-                    _turn = false;
+                    turn = false;
                 }
                 else
                 {
-                    _turn = true;
+                    turn = true;
                 }
+
             }
-            _singelPlayer = singelPlayer;
             bot = new Bot();
         }
-        static Game()
-        {
-            info = "use number key 1 to 9 (left to right, top to bottom)";
-        }
+        #endregion
+
+        #region Klassenfelder
+        internal static readonly string info = "use number key 1 to 9 (left to right, top to bottom)";
+        #endregion
+
+        #region Insatnzfelder
+
+        private bool? _pFT;
+        internal bool? pFT { get; set; }
+
+
+        private bool _sTS;
+        internal bool sTS { get; set; }
+
+
+        private bool _singelPlayer;
+        internal bool singlePlayer { get; set; }
+
+
+        private Bot _bot;
+        internal Bot bot { get; set; }
+
+
+
+        private int action = -1;
+
+
+        private bool _turn;
+        internal bool turn { get; set; }
+
+
+        private int[] _gameState;
+        internal int[] gameState { get; set; }
+
+
+        private int _gameStatus;
+        internal int gameStatus { get; set; }
+
+
+
+
+
+
+
+
+        #endregion
+
+        #region Methoden der Instanz
+
         public void run()
         {
             bool legality;
-            while (_gameStatus == 0) //gameloop
+            while (gameStatus == 0) //gameloop
             {
-                _turn = !_turn; 
+                turn = !turn;
                 getInput();
                 legality = checkLegality();
                 if (!legality) // resets the turn 
                 {
                     //Console.WriteLine("not legal");
-                    _turn = !_turn;
+                    turn = !turn;
                     continue;
                 }
                 setMove();
                 checkWin();
-                Display.update(_gameState, _turn);
+                Display.update(gameState, turn);
             }
             endOfMatch();
         }
@@ -64,7 +115,7 @@ namespace TicTacToe
             bool validKeyState = false;
             while (!validKeyState)
             {
-                if (_turn || (!_turn && !_singelPlayer))
+                if (turn || (!turn && !singlePlayer))
                 {
                     ConsoleKeyInfo key = Console.ReadKey();
                     string temp = ""; //not the elegant way to solve that i guess
@@ -79,9 +130,9 @@ namespace TicTacToe
                         }
                     }
                 }
-                else if (_singelPlayer && !_turn)
+                else if (singlePlayer && !turn)
                 {
-                    bot.setState(_gameState);
+                    bot.setState(gameState);
                     action = bot.getTurn();
                     if (action >= 0 && action < 9)
                     {
@@ -95,58 +146,58 @@ namespace TicTacToe
                 }
             }
         }
-        private void checkWin() //updates _gameStatus
+        private void checkWin() //updates gameStatus
         {
             if //player 1 wins
             (
-                (_gameState[0] == 1 && _gameState[1] == 1 && _gameState[2] == 1) ||
-                (_gameState[3] == 1 && _gameState[4] == 1 && _gameState[5] == 1) ||
-                (_gameState[6] == 1 && _gameState[7] == 1 && _gameState[8] == 1) ||
+                (gameState[0] == 1 && gameState[1] == 1 && gameState[2] == 1) ||
+                (gameState[3] == 1 && gameState[4] == 1 && gameState[5] == 1) ||
+                (gameState[6] == 1 && gameState[7] == 1 && gameState[8] == 1) ||
 
-                (_gameState[0] == 1 && _gameState[3] == 1 && _gameState[6] == 1) ||
-                (_gameState[1] == 1 && _gameState[4] == 1 && _gameState[7] == 1) ||
-                (_gameState[2] == 1 && _gameState[5] == 1 && _gameState[8] == 1) ||
+                (gameState[0] == 1 && gameState[3] == 1 && gameState[6] == 1) ||
+                (gameState[1] == 1 && gameState[4] == 1 && gameState[7] == 1) ||
+                (gameState[2] == 1 && gameState[5] == 1 && gameState[8] == 1) ||
 
-                (_gameState[0] == 1 && _gameState[4] == 1 && _gameState[8] == 1) ||
-                (_gameState[2] == 1 && _gameState[4] == 1 && _gameState[6] == 1) 
+                (gameState[0] == 1 && gameState[4] == 1 && gameState[8] == 1) ||
+                (gameState[2] == 1 && gameState[4] == 1 && gameState[6] == 1)
             )
             {
-                _gameStatus = 1;
+                gameStatus = 1;
             }
             else if //palyer 2 wins
             (
-                (_gameState[0] == 2 && _gameState[1] == 2 && _gameState[2] == 2) ||
-                (_gameState[3] == 2 && _gameState[4] == 2 && _gameState[5] == 2) ||
-                (_gameState[6] == 2 && _gameState[7] == 2 && _gameState[8] == 2) ||
+                (gameState[0] == 2 && gameState[1] == 2 && gameState[2] == 2) ||
+                (gameState[3] == 2 && gameState[4] == 2 && gameState[5] == 2) ||
+                (gameState[6] == 2 && gameState[7] == 2 && gameState[8] == 2) ||
 
-                (_gameState[0] == 2 && _gameState[3] == 2 && _gameState[6] == 2) ||
-                (_gameState[1] == 2 && _gameState[4] == 2 && _gameState[7] == 2) ||
-                (_gameState[2] == 2 && _gameState[5] == 2 && _gameState[8] == 2) ||
+                (gameState[0] == 2 && gameState[3] == 2 && gameState[6] == 2) ||
+                (gameState[1] == 2 && gameState[4] == 2 && gameState[7] == 2) ||
+                (gameState[2] == 2 && gameState[5] == 2 && gameState[8] == 2) ||
 
-                (_gameState[0] == 2 && _gameState[4] == 2 && _gameState[8] == 2) ||
-                (_gameState[2] == 2 && _gameState[4] == 2 && _gameState[6] == 2)
+                (gameState[0] == 2 && gameState[4] == 2 && gameState[8] == 2) ||
+                (gameState[2] == 2 && gameState[4] == 2 && gameState[6] == 2)
             )
             {
-                _gameStatus = 2;
+                gameStatus = 2;
             }
             else if //checks for draw 
             (
-                _gameState[0] != 0 &&
-                _gameState[1] != 0 &&
-                _gameState[2] != 0 && 
-                _gameState[3] != 0 && 
-                _gameState[5] != 0 &&
-                _gameState[6] != 0 &&
-                _gameState[7] != 0 &&
-                _gameState[8] != 0
+                gameState[0] != 0 &&
+                gameState[1] != 0 &&
+                gameState[2] != 0 &&
+                gameState[3] != 0 &&
+                gameState[5] != 0 &&
+                gameState[6] != 0 &&
+                gameState[7] != 0 &&
+                gameState[8] != 0
             )
             {
-                _gameStatus = 3;
+                gameStatus = 3;
             }
         }
         private bool checkLegality()
         {
-            if (_gameState[action] == 0)
+            if (gameState[action] == 0)
             {
                 return true;
             }
@@ -157,21 +208,21 @@ namespace TicTacToe
         }
         private void setMove()
         {
-            if (_turn)
+            if (turn)
             {
-                _gameState[action] = 1;
+                gameState[action] = 1;
             }
             else
             {
-                _gameState[action] = 2;
+                gameState[action] = 2;
             }
         }
         private void endOfMatch()
         {
             //Console.Clear();
-            if (_gameStatus < 3)
+            if (gameStatus < 3)
             {
-                Console.WriteLine($"player {_gameStatus} has won");
+                Console.WriteLine($"player {gameStatus} has won");
                 for (int i = 0; i < 60; i++)
                 {
                     Console.WriteLine();
@@ -187,13 +238,12 @@ namespace TicTacToe
                     Thread.Sleep(200);
                 }
             }
-            
+
             Console.ReadLine();
         }
-        public static string getGameInfo()
-        {
-            return info;
-        }
+
+        #endregion
+
     }
 
 }

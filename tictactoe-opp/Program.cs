@@ -35,7 +35,7 @@ namespace TicTacToe
                 }
                 else if (input.KeyChar == 'n')
                 {
-                    Console.WriteLine(Game.getGameInfo());
+                    Console.WriteLine(Game.info);
                     Console.ReadKey();
                     break;
                 }
