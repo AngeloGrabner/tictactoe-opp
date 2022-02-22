@@ -70,7 +70,7 @@ internal static class Display
         }
         else
         {
-            Console.WindowHeight = _height;
+            Console.WindowHeight = _height+1;
         }
         if (Console.LargestWindowWidth < _width)
         {

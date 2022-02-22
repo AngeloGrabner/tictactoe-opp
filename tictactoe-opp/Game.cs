@@ -4,6 +4,7 @@ namespace TicTacToe
 {
     internal class Game
     {
+        private static readonly string info;
         private readonly bool _singelPlayer;
         private Bot bot;
         private int action = -1;
@@ -33,6 +34,10 @@ namespace TicTacToe
             }
             _singelPlayer = singelPlayer;
             bot = new Bot();
+        }
+        static Game()
+        {
+            info = "use number key 1 to 9 (left to right, top to bottom)";
         }
         public void run()
         {
@@ -184,6 +189,10 @@ namespace TicTacToe
             }
             
             Console.ReadLine();
+        }
+        public static string getGameInfo()
+        {
+            return info;
         }
     }
 
