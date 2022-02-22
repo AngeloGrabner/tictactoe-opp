@@ -6,10 +6,11 @@ namespace TicTacToe
     {
 
         #region Konstruktoren
-        internal Game() : this(true, false, null) { }
-        internal Game(bool playMod) : this(playMod, false, null) { }
+        internal Game() : this(true, false, null) { }                           //Konstruktor wenn nichts übergeben wird
+                                                                                //'this' übergibt drei Werte an den drei Parameter-Konstruktor  
+        internal Game(bool playMod) : this(playMod, false, null) { }            //Konstruktor wenn nur der playMod übergeben wird übergeben wird
         internal Game(bool playMod, bool startTurnSet) : this(playMod, startTurnSet, null) { }
-        internal Game(bool playMod, bool startTurnSet, bool? playerFirstTurn)
+        internal Game(bool playMod, bool startTurnSet, bool? playerFirstTurn)   //Konstruktor wenn alle Felder übergeben werden. 
         {
             sTS = startTurnSet;
             pFT = playerFirstTurn;
@@ -48,42 +49,15 @@ namespace TicTacToe
 
         #region Insatnzfelder
 
-        private bool? _pFT;
         internal bool? pFT { get; set; }
-
-
-        private bool _sTS;
         internal bool sTS { get; set; }
-
-
-        private bool _singelPlayer;
         internal bool singlePlayer { get; set; }
-
-
-        private Bot _bot;
         internal Bot bot { get; set; }
-
-
-
-        private int action = -1;
-
-
-        private bool _turn;
         internal bool turn { get; set; }
-
-
-        private int[] _gameState;
-        internal int[] gameState { get; set; }
-
-
-        private int _gameStatus;
+        internal int[] gameState { get;private set; } //Die Sichtbarkeit von 'set' ist auf die Anwendung beschränkt
         internal int gameStatus { get; set; }
 
-
-
-
-
-
+        private int action = -1;
 
 
         #endregion
@@ -242,6 +216,7 @@ namespace TicTacToe
             Console.ReadLine();
         }
 
+        //Info-Methode wurde entfernt
         #endregion
 
     }
