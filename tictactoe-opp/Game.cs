@@ -167,8 +167,9 @@ namespace TicTacToe
             }
         }
         private void endOfMatch()
-        {
-            //Console.Clear();
+        { 
+            Thread.Sleep(2000); 
+            Console.Clear();
             if (_gameStatus < 3)
             {
                 Console.WriteLine($"player {_gameStatus} has won");

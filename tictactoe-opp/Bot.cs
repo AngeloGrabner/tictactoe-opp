@@ -41,7 +41,7 @@ internal class Bot
     }
     public int getTurn()
     {
-        Console.WriteLine("preanalyse");
+        //Console.WriteLine("preanalyse");
         Tuple<bool, int> isLastMove = preAnalyse();
         if (isLastMove.Item1)
         {

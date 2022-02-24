@@ -70,7 +70,7 @@ internal static class ColorSupport
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern IntPtr GetStdHandle(int nStdHandle);
 
-    [DllImport("kernel32.dll", SetLastError = true)]
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)] //this has done the trick
     private static extern bool WriteConsoleOutput(
     IntPtr hConsoleOutput,
     CHAR_INFO[] lpBuffer,

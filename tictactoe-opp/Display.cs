@@ -86,6 +86,7 @@ internal static class Display
         //Console.OutputEncoding = System.Text.Encoding.Unicode;
         f = new CHAR_INFO[_width * _height];
         ColorSupport.setup(_width,_height);
+        //Console.SetCursorPosition(0, 58);
     }
     public static void update(int[] gameState, bool playerTurn) // colering is coming soon
     {
